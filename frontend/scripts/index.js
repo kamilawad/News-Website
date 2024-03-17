@@ -1,7 +1,7 @@
-const news_container = $("#news_container");
+const news_container = $("#news");
 const addbtn = $('#add-news');
-const title = $('#title');
-const text = $('#content');
+const titleContainer = $('#title');
+const textContainer = $('#content');
 const form = $('#add-news-form');
 
 const getNews = () => {
@@ -12,8 +12,7 @@ const getNews = () => {
     return response.json();
   })
   .then((data) => {
-    console.log(data);
-    //display(data);
+    displayNews(data);
   })
   .catch((error) => {
     console.error(error);
@@ -22,8 +21,8 @@ const getNews = () => {
 
 const addNews = () => {
   const formData = new FormData();
-  formData.append('title', title.val());
-  formData.append('text', text.val());
+  formData.append('title', titleContainer.val());
+  formData.append('text', textContainer.val());
   fetch("http://localhost/News-Website/backend/create.php", {
   method: "POST",
   body: formData
@@ -46,7 +45,21 @@ form.submit((e) => {
 });
 
 const displayNews = (data) => {
-  
+  data.news.forEach(element => {
+    const newCard = generateNew(element);
+    news_container.append(newCard);
+  });
+};
+
+const generateNew = (data) => {
+  const {title, text} = data;
+  return `<div class='card mb-3'>
+            <div class='card-body'>
+              <h5 class='card-title'>${title}</h5>
+              <p class='card-text'>${text}</p>
+              <p class='card-text'><small class='text-muted'>Author: Kamil Awad</small></p>
+            </div>
+          </div>`
 }
 
 getNews();
