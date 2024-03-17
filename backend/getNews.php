@@ -25,6 +25,6 @@ if ($num_rows == 0) {
 }
 
 $response['status'] = "success";
-$response['news'] = $new;
+$response['news'] = $news;
 
 echo json_encode($response);
