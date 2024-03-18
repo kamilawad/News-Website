@@ -5,7 +5,19 @@ const textContainer = $('#content');
 const form = $('#add-news-form');
 
 const getNews = () => {
-  fetch("http://localhost/News-Website/backend/getNews.php", {
+  $.ajax({
+    url: "http://localhost/News-Website/backend/getNews.php",
+    type: "GET",
+    dataType: "json",
+    success: data => {
+      displayNews(data);
+    },
+    error: function(error) {
+      console.error(error);
+    }
+  });
+
+  /*fetch("http://localhost/News-Website/backend/getNews.php", {
     method: "GET",
   })
   .then((response) => {
@@ -16,14 +28,35 @@ const getNews = () => {
   })
   .catch((error) => {
     console.error(error);
-  });
+  });*/
 };
 
 const addNews = () => {
   const formData = new FormData();
   formData.append('title', titleContainer.val());
   formData.append('text', textContainer.val());
-  fetch("http://localhost/News-Website/backend/create.php", {
+
+  $.ajax({
+    url: "http://localhost/News-Website/backend/create.php",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: data => getNews(),
+    error: function(error) {
+      console.error(error);
+    }
+  });
+  
+  /*
+  contentType: "application/json",
+  data: JSON.stringify(jsonData),
+  data: {
+    title: "Example Title",
+    text: "Example Text"
+  },*/
+
+  /*fetch("http://localhost/News-Website/backend/create.php", {
   method: "POST",
   body: formData
 })
@@ -36,16 +69,16 @@ const addNews = () => {
 })
 .catch((error) => {
   console.error(error);
-});
+});*/
 };
 
-form.submit((e) => {
+form.on('submit', (e) => {
   e.preventDefault();
   addNews();
 });
 
 const displayNews = (data) => {
-  data.news.forEach(element => {
+  $.each(data.news, (index, element) => {
     const newCard = generateNew(element);
     news_container.append(newCard);
   });
